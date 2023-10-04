@@ -104,7 +104,11 @@ class Transaction {
     }
    }
     checkBranch(branch) {
-      return this.branches.includes(branch);
+      if (this.branches.includes(branch)){
+        return true
+      }else {
+        return false;
+      }
     }
   
     listCustomers(branch, includeTransactions) {
