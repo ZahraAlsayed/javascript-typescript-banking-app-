@@ -180,6 +180,36 @@ console.log("------  Check if a Branch Exists in the Bank : --------\n");
 const branchExists = myBank.checkBranch(branchA); // Check if a branch exists in the bank
 console.log("Branch A Exists in the Bank:", branchExists);
 
+console.log("------------------------ Example 2 : ----------------------------------\n");
+const arizonaBank = new Bank("Arizona");
+const westBranch = new Branch("West Branch");
+const sunBranch = new Branch("Sun Branch");
+const customer3 = new Customer("John", 1);
+const customer4 = new Customer("Anna", 2);
+const customer5 = new Customer("John", 3);
+
+arizonaBank.addBranch(westBranch); 
+arizonaBank.addBranch(sunBranch);
+arizonaBank.addBranch(westBranch); 
+
+console.log(arizonaBank.findBranchByName("bank")); 
+console.log(arizonaBank.findBranchByName("Sun Branch")); 
+
+arizonaBank.addCustomer(westBranch, customer3);
+arizonaBank.addCustomer(westBranch, customer5); 
+arizonaBank.addCustomer(sunBranch, customer3); 
+arizonaBank.addCustomer(sunBranch, customer4);
+
+arizonaBank.addCustomerTransactions(westBranch, customer3.getId(), 3000);
+arizonaBank.addCustomerTransactions(westBranch, customer3.getId(), 2000);
+arizonaBank.addCustomerTransactions(westBranch, customer4.getId(), 3000);
+
+customer1.addTransaction(-1000); // null
+console.log(customer3.getBalance()); 
+
+arizonaBank.listCustomers(westBranch, true); 
+arizonaBank.listCustomers(sunBranch, true);
+
 
 
 
