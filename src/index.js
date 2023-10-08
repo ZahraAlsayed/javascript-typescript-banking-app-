@@ -45,8 +45,8 @@ var Branch = /** @class */ (function () {
         return this.customers;
     };
     Branch.prototype.addCustomer = function (customer) {
-        var customerExist = !this.customers.some(function (cust) { return cust.getId() === customer.getId(); });
-        if (customerExist) {
+        var customerExists = !this.customers.some(function (cust) { return cust.getId() === customer.getId(); });
+        if (customerExists) {
             this.customers.push(customer);
             return true;
         }
@@ -69,16 +69,16 @@ var Bank = /** @class */ (function () {
         this.branches = [];
     }
     Bank.prototype.addBranch = function (branch) {
-        var exitBranch = !this.branches.some(function (b) { return b.getName() === branch.getName(); });
-        if (exitBranch) {
+        var branchExists = this.branches.some(function (existingBranch) { return existingBranch.getName() === branch.getName(); });
+        if (!branchExists) {
             this.branches.push(branch);
             return true;
         }
         return false;
     };
     Bank.prototype.addCustomer = function (branch, customer) {
-        if (branch.addCustomer(customer)) {
-            return true;
+        if (this.branches.includes(branch)) {
+            return branch.addCustomer(customer);
         }
         return false;
     };
@@ -98,16 +98,11 @@ var Bank = /** @class */ (function () {
         }
     };
     Bank.prototype.checkBranch = function (branch) {
-        if (this.branches.includes(branch)) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return this.branches.includes(branch);
     };
     Bank.prototype.listCustomers = function (branch, includeTransactions) {
         if (!this.branches.includes(branch)) {
-            console.log("This branch not Exitst");
+            console.log("This branch does not exist");
             return;
         }
         console.log("Customers for Branch: ".concat(branch.getName()));

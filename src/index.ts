@@ -1,154 +1,151 @@
 class Transaction {
+  public amount: number;
+  public date: Date;
 
-    amount: number;
-     date: Date;
-     constructor(amount: number, date: Date) {
-       this.amount = amount;
-       this.date = date;
-     }
-     
-   }
-   class Customer {
-     name: string;
-     id: number;
-     transactions: Transaction[];
-     constructor(name: string, id: number) {
-       this.name = name;
-       this.id = id;
-       this.transactions = [];
-     }
-     
-   
-     getName(): string {
-       return this.name;
-     }
-   
-     getId(): number {
-       return this.id;
-     }
-   
-     getTransactions(): Transaction[] {
-       return this.transactions;
-     }
-   
-     getBalance(): number {
-       return this.transactions.reduce((balance, transaction) => balance + transaction.amount, 0);
-     }
-   
-     addTransaction(amount: number): boolean {
-       if (amount >= 0) {
-         const date = new Date();
-         this.transactions.push(new Transaction(amount, date));
-         return true;
-       }
-       return false;
-     }
-   }
-   
-   class Branch {
-    
-     name: string;
-     customers: Customer[];
-   
-     constructor(name: string) {
-       this.name = name;
-       this.customers = [];
-     }
-     
-   
-     getName(): string {
-       return this.name;
-     }
-   
-     getCustomers(): Customer[] {
-       return this.customers;
-     }
-   
-     addCustomer(customer: Customer): boolean {
-         let customerExist = !this.customers.some(cust => cust.getId() === customer.getId());
-         if(customerExist) {
-             this.customers.push(customer);
-             return true;
-         }else{
-          return false;
-     }
-     }
-     addCustomerTransaction(customerId: number, amount: number): boolean {
-       const customer = this.customers.find(cust => cust.getId() === customerId);
-       if (customer) {
-         return customer.addTransaction(amount);
-       }
-       return false;
-     }
-   }
-   
-   class Bank {
-    
-     name: string;
-     branches: Branch[];
-     constructor(name: string) {
-       this.name = name;
-       this.branches = [];
-     }
-     
-   
-     addBranch(branch: Branch): boolean {
-       let exitBranch =!this.branches.some(b => b.getName() === branch.getName());
-       if(exitBranch){
-         this.branches.push(branch);
-         return true;
-       }
-       return false;
-     }
-   
-     addCustomer(branch: Branch, customer: Customer): boolean {
-       if (branch.addCustomer(customer)) {
-         return true;
-       }
-       return false;
-     }
-     addCustomerTransactions(branch: Branch, customerId: number, amount: number): boolean {
-             if (this.branches.includes(branch)) {
-               return branch.addCustomerTransaction(customerId, amount);
-             }
-             return false;
-     }
- 
-     findBranchByName(branchName: string): Branch[] | null {
-       const matchedBranches = this.branches.filter(branch => branch.getName() === branchName);
-       if (matchedBranches.length > 0) {
-         return matchedBranches;
-          
-     }else{
-         return null;
-     }
+  constructor(amount: number, date: Date) {
+    this.amount = amount;
+    this.date = date;
+  }
+}
+
+class Customer {
+  public name: string;
+  public id: number;
+  public transactions: Transaction[];
+
+  constructor(name: string, id: number) {
+    this.name = name;
+    this.id = id;
+    this.transactions = [];
+  }
+
+  public getName(): string {
+    return this.name;
+  }
+
+  public getId(): number {
+    return this.id;
+  }
+
+  public getTransactions(): Transaction[] {
+    return this.transactions;
+  }
+
+  public getBalance(): number {
+    return this.transactions.reduce((balance, transaction) => balance + transaction.amount, 0);
+  }
+
+  public addTransaction(amount: number): boolean {
+    if (amount >= 0) {
+      const date = new Date();
+      this.transactions.push(new Transaction(amount, date));
+      return true;
     }
-     checkBranch(branch: Branch): boolean {
-       if (this.branches.includes(branch)){
-         return true
-       }else {
-         return false;
-       }
-     }
-   
-     listCustomers(branch: Branch, includeTransactions: boolean): void {
-         if (!this.branches.includes(branch)) {
-             console.log("This branch not Exitst");
-             return;
-           }
-       console.log(`Customers for Branch: ${branch.getName()}`);
-       branch.getCustomers().forEach(customer => {
-         console.log(`Customer: ${customer.getName()}`);
-         if (includeTransactions) {
-           console.log(`Transactions:`);
-           customer.getTransactions().forEach(transaction => {
-             console.log(`  Amount: ${transaction.amount}, Date: ${transaction.date}`);
-           });
-         }
-       });
-     }
-   }
-   console.log("------------------ Example 1: -----------------\n");
+    return false;
+  }
+}
+
+class Branch {
+  public name: string;
+  public customers: Customer[];
+
+  constructor(name: string) {
+    this.name = name;
+    this.customers = [];
+  }
+
+  public getName(): string {
+    return this.name;
+  }
+
+  public getCustomers(): Customer[] {
+    return this.customers;
+  }
+
+  public addCustomer(customer: Customer): boolean {
+    const customerExists = !this.customers.some(cust => cust.getId() === customer.getId());
+    if (customerExists) {
+      this.customers.push(customer);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public addCustomerTransaction(customerId: number, amount: number): boolean {
+    const customer = this.customers.find(cust => cust.getId() === customerId);
+    if (customer) {
+      return customer.addTransaction(amount);
+    }
+    return false;
+  }
+}
+
+class Bank {
+  public name: string;
+  public branches: Branch[];
+
+  constructor(name: string) {
+    this.name = name;
+    this.branches = [];
+  }
+
+  public addBranch(branch: Branch): boolean {
+    const branchExists = this.branches.some(existingBranch => existingBranch.getName() === branch.getName());
+    if (!branchExists) {
+      this.branches.push(branch);
+      return true;
+    }
+    return false;
+  }
+
+  public addCustomer(branch: Branch, customer: Customer): boolean {
+    if (this.branches.includes(branch)) {
+      return branch.addCustomer(customer);
+    }
+    return false;
+  }
+
+  public addCustomerTransactions(branch: Branch, customerId: number, amount: number): boolean {
+    if (this.branches.includes(branch)) {
+      return branch.addCustomerTransaction(customerId, amount);
+    }
+    return false;
+  }
+
+  public findBranchByName(branchName: string): Branch[] | null {
+    const matchedBranches = this.branches.filter(branch => branch.getName() === branchName);
+    if (matchedBranches.length > 0) {
+      return matchedBranches;
+    } else {
+      return null;
+    }
+  }
+
+  public checkBranch(branch: Branch): boolean {
+    return this.branches.includes(branch);
+  }
+
+  public listCustomers(branch: Branch, includeTransactions: boolean): void {
+    if (!this.branches.includes(branch)) {
+      console.log("This branch does not exist");
+      return;
+    }
+    console.log(`Customers for Branch: ${branch.getName()}`);
+    branch.getCustomers().forEach(customer => {
+      console.log(`Customer: ${customer.getName()}`);
+      if (includeTransactions) {
+        console.log(`Transactions:`);
+        customer.getTransactions().forEach(transaction => {
+          console.log(`  Amount: ${transaction.amount}, Date: ${transaction.date}`);
+        });
+      }
+    });
+  }
+}
+
+
+console.log("------------------ Example 1: -----------------\n");
 console.log("------ Create a Bank and Branch --------\n");
 const myBank = new Bank("My Bank");
 const branchA = new Branch("Branch A");

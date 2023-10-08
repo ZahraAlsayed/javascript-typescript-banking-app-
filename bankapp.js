@@ -77,12 +77,15 @@ class Transaction {
     }
   
     addBranch(branch) {
-      let exitBranch =!this.branches.some(b => b.getName() === branch.getName());
-      if(exitBranch){
-        this.branches.push(branch);
-        return true;
+      const isBranchExisting = this.branches.some(existingBranch => existingBranch.getName() === branch.getName());
+
+      if (!isBranchExisting) {
+          this.branches.push(branch);
+          return true;
       }
+      
       return false;
+      
     }
   
     addCustomer(branch, customer) {
